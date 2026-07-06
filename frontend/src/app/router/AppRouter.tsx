@@ -87,7 +87,7 @@ export function AppRouter() {
             <Route path="categories" element={<AdminCategoriesPage />} />
             <Route path="orders" element={<AdminOrdersPage />} />
             <Route path="customers" element={<AdminCustomersPage />} />
-            <Route path="reviews" element={<AdminReviewsPage />} />   
+            <Route path="reviews" element={<AdminReviewsPage />} />
             <Route path="banners" element={<AdminBannersPage />} />
             <Route path="homepage" element={<AdminHomepagePage />} />
             <Route path="media" element={<AdminMediaPage />} />
