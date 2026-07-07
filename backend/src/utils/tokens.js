@@ -30,37 +30,40 @@ function parseDurationMs(value, fallbackMs) {
   return Number(amount) * DURATION_UNITS[unit]
 }
 
-function baseCookieOptions() {
-  const isProd = env.nodeEnv === 'production'
+// Derived from the actual request (not NODE_ENV) so a misconfigured env var
+// on the host can't silently bring back non-cross-site cookies. `req.secure`
+// is accurate here because app.js sets `trust proxy`.
+function baseCookieOptions(req) {
+  const isHttps = req.secure
   return {
     httpOnly: true,
-    secure: isProd,
-    sameSite: isProd ? 'none' : 'lax',
+    secure: isHttps,
+    sameSite: isHttps ? 'none' : 'lax',
   }
 }
 
-export function accessCookieOptions() {
+export function accessCookieOptions(req) {
   return {
-    ...baseCookieOptions(),
+    ...baseCookieOptions(req),
     path: '/api',
     maxAge: parseDurationMs(env.jwtAccessExpiresIn, 15 * 60 * 1000),
   }
 }
 
-export function refreshCookieOptions() {
+export function refreshCookieOptions(req) {
   return {
-    ...baseCookieOptions(),
+    ...baseCookieOptions(req),
     path: '/api/auth',
     maxAge: parseDurationMs(env.jwtRefreshExpiresIn, 30 * 24 * 60 * 60 * 1000),
   }
 }
 
-export function clearAccessCookieOptions() {
-  const { maxAge, ...rest } = accessCookieOptions()
+export function clearAccessCookieOptions(req) {
+  const { maxAge, ...rest } = accessCookieOptions(req)
   return rest
 }
 
-export function clearRefreshCookieOptions() {
-  const { maxAge, ...rest } = refreshCookieOptions()
+export function clearRefreshCookieOptions(req) {
+  const { maxAge, ...rest } = refreshCookieOptions(req)
   return rest
 }

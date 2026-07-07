@@ -12,13 +12,13 @@ import {
   clearRefreshCookieOptions,
 } from '../utils/tokens.js'
 
-async function issueSession(res, user) {
+async function issueSession(req, res, user) {
   const accessToken = signAccessToken(user)
   const refreshToken = signRefreshToken(user)
   user.refreshTokenHash = await bcrypt.hash(refreshToken, 10)
   await user.save()
-  res.cookie('accessToken', accessToken, accessCookieOptions())
-  res.cookie('refreshToken', refreshToken, refreshCookieOptions())
+  res.cookie('accessToken', accessToken, accessCookieOptions(req))
+  res.cookie('refreshToken', refreshToken, refreshCookieOptions(req))
   return accessToken
 }
 
@@ -33,7 +33,7 @@ export const register = asyncHandler(async (req, res) => {
   const passwordHash = await bcrypt.hash(password, 10)
   const user = await User.create({ name, email, passwordHash, role: 'customer' })
 
-  await issueSession(res, user)
+  await issueSession(req, res, user)
   res.status(201).json({ user })
 })
 
@@ -45,7 +45,7 @@ export const login = asyncHandler(async (req, res) => {
     throw ApiError.unauthorized('Invalid email or password')
   }
 
-  await issueSession(res, user)
+  await issueSession(req, res, user)
   res.json({ user })
 })
 
@@ -67,7 +67,7 @@ export const refresh = asyncHandler(async (req, res) => {
     throw ApiError.unauthorized('Refresh token no longer valid')
   }
 
-  await issueSession(res, user)
+  await issueSession(req, res, user)
   res.status(204).send()
 })
 
@@ -81,8 +81,8 @@ export const logout = asyncHandler(async (req, res) => {
       // token already invalid/expired — nothing to revoke
     }
   }
-  res.clearCookie('accessToken', clearAccessCookieOptions())
-  res.clearCookie('refreshToken', clearRefreshCookieOptions())
+  res.clearCookie('accessToken', clearAccessCookieOptions(req))
+  res.clearCookie('refreshToken', clearRefreshCookieOptions(req))
   res.status(204).send()
 })
 
