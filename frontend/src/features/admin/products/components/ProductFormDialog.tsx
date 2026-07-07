@@ -1,8 +1,9 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import toast from 'react-hot-toast'
+import { Upload } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -23,6 +24,7 @@ import {
 } from '@/components/ui/select'
 import { useAdminCategories } from '@/hooks/useAdminCategories'
 import { useCreateProduct, useUpdateProduct } from '@/hooks/useAdminProducts'
+import { useUploadMedia } from '@/hooks/useAdminMedia'
 import type { Product } from '@/types'
 
 const productSchema = z.object({
@@ -49,6 +51,8 @@ export function ProductFormDialog({
   const { data: categories } = useAdminCategories()
   const createProduct = useCreateProduct()
   const updateProduct = useUpdateProduct()
+  const uploadMedia = useUploadMedia()
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const {
     register,
@@ -60,6 +64,22 @@ export function ProductFormDialog({
   } = useForm<ProductFormInput, unknown, ProductFormValues>({
     resolver: zodResolver(productSchema),
   })
+
+  const imageUrl = watch('imageUrl')
+
+  async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0]
+    if (!file) return
+    try {
+      const asset = await uploadMedia.mutateAsync(file)
+      setValue('imageUrl', asset.url, { shouldValidate: true })
+      toast.success('Image uploaded')
+    } catch {
+      toast.error('Image upload failed')
+    } finally {
+      event.target.value = ''
+    }
+  }
 
   useEffect(() => {
     if (open) {
@@ -143,8 +163,38 @@ export function ProductFormDialog({
           </div>
 
           <Field>
-            <FieldLabel htmlFor="imageUrl">Image URL</FieldLabel>
-            <Input id="imageUrl" {...register('imageUrl')} />
+            <FieldLabel htmlFor="imageUrl">Image</FieldLabel>
+            <div className="flex items-center gap-3">
+              {imageUrl ? (
+                <img
+                  src={imageUrl}
+                  alt="Preview"
+                  className="size-16 shrink-0 rounded-lg border border-border object-cover"
+                />
+              ) : null}
+              <Button
+                type="button"
+                variant="secondary"
+                disabled={uploadMedia.isPending}
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <Upload className="size-4" />
+                {uploadMedia.isPending ? 'Uploading…' : 'Upload Image'}
+              </Button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleFileChange}
+              />
+            </div>
+            <Input
+              id="imageUrl"
+              placeholder="Or paste an image URL"
+              className="mt-2"
+              {...register('imageUrl')}
+            />
             <FieldError errors={[errors.imageUrl]} />
           </Field>
 
