@@ -31,10 +31,11 @@ function parseDurationMs(value, fallbackMs) {
 }
 
 function baseCookieOptions() {
+  const isProd = env.nodeEnv === 'production'
   return {
     httpOnly: true,
-    secure: env.nodeEnv === 'production',
-    sameSite: 'lax',
+    secure: isProd,
+    sameSite: isProd ? 'none' : 'lax',
   }
 }
 
