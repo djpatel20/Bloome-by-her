@@ -7,3 +7,10 @@ export function useInstagramGallery() {
     queryFn: homepageService.instagramGallery,
   })
 }
+
+export function useBanners() {
+  return useQuery({
+    queryKey: ['homepage', 'banners'],
+    queryFn: homepageService.banners,
+  })
+}

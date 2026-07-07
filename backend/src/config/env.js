@@ -8,11 +8,17 @@ function required(name, fallback) {
   return value
 }
 
+const configuredClientUrls = (process.env.CLIENT_URL ?? '')
+  .split(',')
+  .map((url) => url.trim())
+  .filter(Boolean)
+
 export const env = {
   port: Number(process.env.PORT ?? 4000),
   nodeEnv: process.env.NODE_ENV ?? 'development',
   mongoUri: required('MONGO_URI'),
-  clientUrl: process.env.CLIENT_URL ?? 'http://localhost:5173',
+  // Local dev origin is always allowed alongside whatever CLIENT_URL(s) are configured.
+  clientUrls: [...new Set(['http://localhost:5173', ...configuredClientUrls])],
   jwtAccessSecret: required('JWT_ACCESS_SECRET'),
   jwtRefreshSecret: required('JWT_REFRESH_SECRET'),
   jwtAccessExpiresIn: process.env.JWT_ACCESS_EXPIRES_IN ?? '15m',

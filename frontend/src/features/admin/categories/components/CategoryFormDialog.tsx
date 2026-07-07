@@ -13,6 +13,7 @@ import {
 import { Field, FieldError, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import { ImageUploadField } from '@/components/admin/ImageUploadField'
 import { useCreateCategory, useUpdateCategory } from '@/hooks/useAdminCategories'
 import type { Category } from '@/types'
 
@@ -37,6 +38,8 @@ export function CategoryFormDialog({
   const {
     register,
     handleSubmit,
+    watch,
+    setValue,
     reset,
     formState: { errors, isSubmitting },
   } = useForm<CategoryFormValues>({ resolver: zodResolver(categorySchema) })
@@ -70,11 +73,13 @@ export function CategoryFormDialog({
             <Input id="cat-name" {...register('name')} />
             <FieldError errors={[errors.name]} />
           </Field>
-          <Field>
-            <FieldLabel htmlFor="cat-image">Image URL</FieldLabel>
-            <Input id="cat-image" {...register('imageUrl')} />
-            <FieldError errors={[errors.imageUrl]} />
-          </Field>
+          <ImageUploadField
+            id="cat-image"
+            label="Image"
+            value={watch('imageUrl') ?? ''}
+            onChange={(url) => setValue('imageUrl', url, { shouldValidate: true })}
+            error={errors.imageUrl}
+          />
           <DialogFooter>
             <Button type="submit" disabled={isSubmitting}>
               {category ? 'Save Changes' : 'Create Category'}

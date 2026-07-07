@@ -1,5 +1,6 @@
 import { Helmet } from 'react-helmet-async'
 import { Hero } from './components/Hero'
+import { BannerCarousel } from './components/BannerCarousel'
 import { CategoriesSection } from './components/CategoriesSection'
 import { BestSellersSection } from './components/BestSellersSection'
 import { WhyChooseUs } from './components/WhyChooseUs'
@@ -17,6 +18,7 @@ export default function HomePage() {
         />
       </Helmet>
       <Hero />
+      <BannerCarousel />
       <CategoriesSection />
       <BestSellersSection />
       <WhyChooseUs />

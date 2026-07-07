@@ -17,7 +17,19 @@ export const app = express()
 app.set('trust proxy', 1)
 
 app.use(helmet())
-app.use(cors({ origin: env.clientUrl, credentials: true }))
+app.use(
+  cors({
+    origin(origin, callback) {
+      // Non-browser requests (curl, server-to-server, health checks) send no Origin header.
+      if (!origin || env.clientUrls.includes(origin)) {
+        callback(null, true)
+      } else {
+        callback(new Error(`Origin ${origin} not allowed by CORS`))
+      }
+    },
+    credentials: true,
+  }),
+)
 app.use(express.json())
 app.use(cookieParser())
 if (!isProduction) {

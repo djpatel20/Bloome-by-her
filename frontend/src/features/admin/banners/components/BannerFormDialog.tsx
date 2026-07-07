@@ -13,6 +13,7 @@ import {
 import { Field, FieldError, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import { ImageUploadField } from '@/components/admin/ImageUploadField'
 import { useCreateBanner, useUpdateBanner } from '@/hooks/useAdminBanners'
 import type { Banner } from '@/types'
 
@@ -38,6 +39,8 @@ export function BannerFormDialog({
   const {
     register,
     handleSubmit,
+    watch,
+    setValue,
     reset,
     formState: { errors, isSubmitting },
   } = useForm<BannerFormValues>({ resolver: zodResolver(bannerSchema) })
@@ -75,11 +78,13 @@ export function BannerFormDialog({
             <Input id="banner-title" {...register('title')} />
             <FieldError errors={[errors.title]} />
           </Field>
-          <Field>
-            <FieldLabel htmlFor="banner-image">Image URL</FieldLabel>
-            <Input id="banner-image" {...register('imageUrl')} />
-            <FieldError errors={[errors.imageUrl]} />
-          </Field>
+          <ImageUploadField
+            id="banner-image"
+            label="Image"
+            value={watch('imageUrl') ?? ''}
+            onChange={(url) => setValue('imageUrl', url, { shouldValidate: true })}
+            error={errors.imageUrl}
+          />
           <Field>
             <FieldLabel htmlFor="banner-link">Link URL (optional)</FieldLabel>
             <Input id="banner-link" {...register('linkUrl')} />
