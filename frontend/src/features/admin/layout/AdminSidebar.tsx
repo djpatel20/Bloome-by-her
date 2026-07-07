@@ -31,11 +31,17 @@ const NAV_ITEMS = [
   { label: 'Settings', to: ROUTES.admin.settings, icon: Settings },
 ]
 
-export function AdminSidebar() {
+export function AdminSidebar({
+  className,
+  onNavigate,
+}: {
+  className?: string
+  onNavigate?: () => void
+}) {
   const logout = useLogout()
 
   return (
-    <aside className="flex h-screen w-64 flex-col bg-sidebar text-sidebar-foreground">
+    <aside className={cn('flex h-full w-64 flex-col bg-sidebar text-sidebar-foreground', className)}>
       <div className="px-5 py-6">
         <span className="font-heading text-xl font-bold text-sidebar-primary">Bloome By Her</span>
       </div>
@@ -45,6 +51,7 @@ export function AdminSidebar() {
             key={label}
             to={to}
             end={end}
+            onClick={onNavigate}
             className={({ isActive }) =>
               cn(
                 'flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-sidebar-foreground/70 transition hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
@@ -59,7 +66,10 @@ export function AdminSidebar() {
       </nav>
       <button
         type="button"
-        onClick={() => logout.mutate()}
+        onClick={() => {
+          onNavigate?.()
+          logout.mutate()
+        }}
         className="flex items-center gap-3 border-t border-sidebar-border px-6 py-4 text-sm font-semibold text-sidebar-foreground/70 transition hover:text-sidebar-accent-foreground"
       >
         <LogOut className="size-4" />

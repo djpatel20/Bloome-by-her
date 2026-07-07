@@ -57,7 +57,7 @@ export function Hero() {
           <img
             src={heroImg}
             alt="Handmade flower bouquet"
-            className="w-full max-w-md drop-shadow-xl"
+             className="w-full max-w-4xl drop-shadow-xl"
           />
         </motion.div>
       </div>
