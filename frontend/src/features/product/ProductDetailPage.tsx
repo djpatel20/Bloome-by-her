@@ -1,4 +1,3 @@
-import { Helmet } from 'react-helmet-async'
 import { useParams } from 'react-router-dom'
 import { ProductGallery } from './components/ProductGallery'
 import { ProductInfo } from './components/ProductInfo'
@@ -6,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ReviewList } from '@/components/reviews/ReviewList'
 import { ReviewForm } from '@/components/reviews/ReviewForm'
 import { ErrorState } from '@/components/common/ErrorState'
+import { Seo } from '@/components/common/Seo'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useProduct } from '@/hooks/useProducts'
 import { useProductReviews } from '@/hooks/useReviews'
@@ -38,10 +38,13 @@ export default function ProductDetailPage() {
 
   return (
     <>
-      <Helmet>
-        <title>{product.name} — Bloome By Her</title>
-        <meta name="description" content={product.description} />
-      </Helmet>
+      <Seo
+        title={product.name}
+        description={product.description}
+        image={product.images[0]?.url}
+        path={`/product/${product.slug}`}
+        type="product"
+      />
       <div className="mx-auto max-w-6xl px-4 py-8 lg:px-8">
         <div className="grid gap-8 lg:grid-cols-2">
           <ProductGallery images={product.images} productName={product.name} />

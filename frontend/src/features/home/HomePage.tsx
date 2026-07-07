@@ -1,4 +1,4 @@
-import { Helmet } from 'react-helmet-async'
+import { Seo } from '@/components/common/Seo'
 import { Hero } from './components/Hero'
 import { BannerCarousel } from './components/BannerCarousel'
 import { CategoriesSection } from './components/CategoriesSection'
@@ -10,13 +10,7 @@ import { InstagramGallery } from './components/InstagramGallery'
 export default function HomePage() {
   return (
     <>
-      <Helmet>
-        <title>Bloome By Her — Handmade Flowers, Made with Love</title>
-        <meta
-          name="description"
-          content="Shop handmade pipe cleaner flowers, bouquets, keychains, hair clips and more from Bloome By Her."
-        />
-      </Helmet>
+      <Seo title="Bloome By Her — Handmade Flowers, Made with Love" titleIsComplete path="/" />
       <Hero />
       <BannerCarousel />
       <CategoriesSection />

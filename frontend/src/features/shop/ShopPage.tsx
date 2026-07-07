@@ -1,10 +1,10 @@
 import { useMemo } from 'react'
-import { Helmet } from 'react-helmet-async'
 import { useSearchParams } from 'react-router-dom'
 import { ShopFilters } from './components/ShopFilters'
 import { ShopToolbar } from './components/ShopToolbar'
 import { ProductGrid } from '@/components/product/ProductGrid'
 import { ErrorState } from '@/components/common/ErrorState'
+import { Seo } from '@/components/common/Seo'
 import {
   Pagination,
   PaginationContent,
@@ -51,9 +51,11 @@ export default function ShopPage() {
 
   return (
     <>
-      <Helmet>
-        <title>Shop — Bloome By Her</title>
-      </Helmet>
+      <Seo
+        title="Shop"
+        description="Browse handmade pipe cleaner flowers, bouquets, keychains, hair clips and more."
+        path="/shop"
+      />
       <div className="mx-auto max-w-7xl px-4 py-8 lg:px-8">
         <h1 className="mb-6 font-heading text-3xl font-bold text-foreground">Shop</h1>
         <div className="grid gap-6 lg:grid-cols-[260px_1fr]">
