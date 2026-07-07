@@ -27,6 +27,9 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')))
 app.get('/health', (_req, res) => res.json({ status: 'ok' }))
 
 app.use('/api', routes)
-
+app.get("/", (req, res) => {
+  const baseUrl = `${req.protocol}://${req.get('host')}`;
+  res.send(`Bloome By Her Backend is Running 🚀 at ${baseUrl}`);
+});
 app.use(notFound)
 app.use(errorHandler)
